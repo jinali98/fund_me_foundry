@@ -20,12 +20,19 @@ contract FundMe {
         );
         (, int256 answer, , , uint80 answeredInRound) = dataFeed
             .latestRoundData();
-        return uint256(answeredInRound);
+        // this answer returns with 8 decimal places. then we multiply it by 1e10 to get 18 decimal places
+        return uint256(answer * 1e10);
     }
 
     function getConversionRate(
         uint256 ethAmount
-    ) public view returns (uint256) {}
+    ) public view returns (uint256) {
+        // 1 ETH = 1000_000_000_000_000_000_000 USD
+        uint256 ethPrice = getPrice();
+        // eth price values has 18 decimal places and 1 eth in wei has 18 decimal places
+        uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1e18;
+        return ethAmountInUsd;
+    }
 
     function withdraw() public {}
 }
